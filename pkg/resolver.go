@@ -51,7 +51,7 @@ func getReverseDNSName(ip string) ([]string, error) {
 		return nil, errors.New("Unable to resolve the address")
 	}
 
-	log.Println("This address resovles to %v", hostNames)
+	log.Println("This address resovles to ", hostNames)
 	return hostNames, nil
 }
 
