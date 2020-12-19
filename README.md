@@ -2,6 +2,7 @@
 
   ![Testing](https://github.com/rafaelleonardocruz/aws-whois/workflows/Testing/badge.svg)
   ![Generate release](https://github.com/rafaelleonardocruz/aws-whois/workflows/Generate%20release/badge.svg)
+  ![CodeQL](https://github.com/rafaelleonardocruz/aws-whois/workflows/CodeQL/badge.svg)
 
 ## Motivation
 
