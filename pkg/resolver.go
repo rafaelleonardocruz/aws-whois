@@ -19,6 +19,7 @@ func isValidAddress(ip string) (bool, error) {
 		return false, errors.New("It's a Ipv6 address and it's not supported yet")
 	}
 
+	log.Println("It's a valid address")
 	return true, nil
 }
 
@@ -39,19 +40,24 @@ func isPrivateAddress(ip string) (bool, error) {
 	if isPrivate == true {
 		return isPrivate, errors.New("This tool don't work with private address")
 	}
+
+	log.Println("It's a public ipv4 address")
 	return isPrivate, nil
 }
 
-func getReverseDnsName(ip string) ([]string, error) {
+func getReverseDNSName(ip string) ([]string, error) {
 	hostNames, err := net.LookupAddr(ip)
 	if err != nil {
 		return nil, errors.New("Unable to resolve the address")
 	}
+
+	log.Println("This address resovles to %v", hostNames)
 	return hostNames, nil
 }
 
 func isAwsAddress(a string) (bool, error) {
 	if strings.Contains(a, "aws") {
+		log.Println("This address is own by AWS")
 		return true, nil
 	}
 
@@ -59,11 +65,47 @@ func isAwsAddress(a string) (bool, error) {
 }
 
 func getAwsRegion(hostname string) (region string, err error) {
-	parser := strings.Split(hostname, ".")
+	regionList := []string{
+		"us-east-2",
+		"us-east-1",
+		"us-west-1",
+		"us-west-2",
+		"af-south-1",
+		"ap-east-1",
+		"ap-south-1",
+		"ap-northeast-3",
+		"ap-northeast-2",
+		"ap-southeast-1",
+		"ap-southeast-2",
+		"ap-northeast-1",
+		"ca-central-1",
+		"eu-central-1",
+		"eu-west-1",
+		"eu-west-2",
+		"eu-south-1",
+		"eu-west-3",
+		"eu-north-1",
+		"me-south-1",
+		"sa-east-1",
+	}
 
-	return string(parser[1]), nil
+	var found string
+
+	for _, r := range regionList {
+		if strings.Contains(hostname, r) {
+			found = r
+		}
+	}
+
+	if len(region) > 0 {
+		return found, nil
+	}
+
+	log.Println("This address has no region, we'll use your default")
+	return "", nil
 }
 
+//Resolver get information about informed IP
 func Resolver(ip string) (hostnames string, region string, err error) {
 	if _, err := isValidAddress(ip); err != nil {
 		log.Println(err.Error())
@@ -75,7 +117,7 @@ func Resolver(ip string) (hostnames string, region string, err error) {
 		os.Exit(1)
 	}
 
-	dns, err := getReverseDnsName(ip)
+	dns, err := getReverseDNSName(ip)
 
 	if err != nil {
 		log.Println(err.Error())

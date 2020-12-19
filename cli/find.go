@@ -2,27 +2,35 @@ package cli
 
 import (
 	"log"
-	"github.com/spf13/cobra"
+	"os"
+
 	"github.com/rafaelleonardocruz/aws-whois/pkg"
+	"github.com/spf13/cobra"
 )
 
 func NewFindCmd() *cobra.Command {
-	return &cobra.Command{
-		Use: "find [ip-address]",
-		Short: "find which resouce is using an IP address"
-		Long: ``,
-		Args: cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args string) {
-			// WIP
-		}
-
+	cmd := &cobra.Command{
+		Use:   "find [ip-address]",
+		Short: "find which resouce is using an IP address",
+		Long:  ``,
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			ip := args[0]
+			err := Find(ip)
+			if err != nil {
+				log.Println("This IP wasn't found at thins AWS account")
+				os.Exit(1)
+			}
+		},
 	}
+	return cmd
 }
 
-func Find(ip string) {
+//Find func lookup fo address trough supported resources
+func Find(ip string) error {
 	log.Println("validating if is a valid address, and if is an AWS address")
 
-	dns, region, err := pkg.Resolver(ip)
+	_, region, err := pkg.Resolver(ip)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -36,11 +44,11 @@ func Find(ip string) {
 		os.Exit(1)
 	}
 
-	resoure, address, found := pkg.TryMatchEc2(ip, instances)
+	ec2Resource, ec2Found := pkg.TryMatchEc2(ip, instances)
 
-	if found {
-		log.Println("Your resource is %v at %v region", resource, region)
-		os.Exit(0)
+	if ec2Found {
+		log.Println("Your resource is ", ec2Resource.InstanceID)
+		return nil
 	}
 
 	eip, err := pkg.GetElasticIps(region)
@@ -50,14 +58,13 @@ func Find(ip string) {
 		os.Exit(1)
 	}
 
-	resouce, address, found = pkg.TryMatchEip(ip, eip)
+	eipResource, eipFound := pkg.TryMatchEip(ip, eip)
 
-	if found {
-		log.Println("Your resource is %v at %v region", resource, region)
-		os.Exit(0)
+	if eipFound {
+		log.Println("Your resource is ", eipResource.AllocationID)
+		return nil
 	}
 
-	log.Println("This IP wasn't found at thins AWS account")
-	os.Exit(1)
+	return nil
 
 }

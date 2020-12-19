@@ -11,7 +11,7 @@ import (
 
 type ElasticIp struct {
 	AllocationID string
-	PuclicIP     string
+	PublicIP     string
 }
 
 //GetElasticIps return EIPs for a requested region
