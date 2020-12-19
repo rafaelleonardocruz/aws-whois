@@ -3,19 +3,31 @@ package pkg
 import (
 	"errors"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
 type Instance struct {
 	InstanceID string
-	IpAddress  string
+	IPAddress  string
 }
 
-func GetInstances() ([]Instance, error) {
+//GetInstances function get ec2-instances to a specifc AWS Region
+func GetInstances(region string) ([]Instance, error) {
+
 	var result []Instance
 
-	ec2client := ec2.New(session.New())
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String(region)},
+	)
+
+	if err != nil {
+		return nil, errors.New("Error initializing an AWS session")
+	}
+
+	ec2client := ec2.New(sess)
+
 	resp, err := ec2client.DescribeInstances(nil)
 
 	if err != nil {
