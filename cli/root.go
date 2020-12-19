@@ -16,8 +16,6 @@ func Execute(version string) {
 		Version: version,
 	}
 
-	//	rootCmd.PersistentFlags().StringVarP(&ipAddress, "ip-address", "ip", "", "IP Address that you would like to find")
-
 	rootCmd.AddCommand(NewFindCmd())
 
 	if err := rootCmd.Execute(); err != nil {
