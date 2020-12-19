@@ -12,7 +12,7 @@ type Instance struct {
 	IpAddress  string
 }
 
-func getInstances() ([]Instance, error) {
+func GetInstances() ([]Instance, error) {
 	var result []Instance
 
 	ec2client := ec2.New(session.New())

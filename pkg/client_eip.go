@@ -14,7 +14,7 @@ type ElasticIp struct {
 	PuclicIP     string
 }
 
-func getElasticIps() ([]ElasticIp, error) {
+func GetElasticIps() ([]ElasticIp, error) {
 	var result []ElasticIp
 	svc := ec2.New(session.New())
 	input := &ec2.DescribeAddressesInput{

@@ -64,7 +64,7 @@ func getAwsRegion(hostname string) (region string, err error) {
 	return string(parser[1]), nil
 }
 
-func resolver(ip string) (hostnames string, region string, err error) {
+func Resolver(ip string) (hostnames string, region string, err error) {
 	if _, err := isValidAddress(ip); err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
