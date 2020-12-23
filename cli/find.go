@@ -37,34 +37,28 @@ func Find(ip string) error {
 		os.Exit(1)
 	}
 
-	instances, err := pkg.GetInstances(region)
+	err = pkg.GetInstances(region)
 
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	ec2Resource, ec2Found := pkg.TryMatchEc2(ip, instances)
-
-	if ec2Found {
-		log.Println("Your resource is ", ec2Resource.InstanceID)
-		return nil
-	}
-
-	eip, err := pkg.GetElasticIps(region)
+	err = pkg.GetElasticIps(region)
 
 	if err != nil {
 		log.Println(err.Error())
 		os.Exit(1)
 	}
 
-	eipResource, eipFound := pkg.TryMatchEip(ip, eip)
+	Resource, Found := pkg.TryMatch(ip)
 
-	if eipFound {
-		log.Println("Your resource is ", eipResource.AllocationID)
+	if Found {
+		log.Println("Your resource is a", Resource.ResourceName, "its ID is", Resource.ResourceID, "And its IP is ", Resource.PublicIP)
 		return nil
 	}
 
+	log.Println("Address not found")
 	return nil
 
 }
