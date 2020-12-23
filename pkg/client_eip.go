@@ -9,21 +9,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-type ElasticIp struct {
-	AllocationID string
-	PublicIP     string
-}
-
 //GetElasticIps return EIPs for a requested region
-func GetElasticIps(region string) ([]ElasticIp, error) {
-	var result []ElasticIp
-
+func GetElasticIps(region string) error {
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region)},
 	)
 
 	if err != nil {
-		return nil, errors.New("Error initializing an AWS session")
+		return errors.New("Error initializing an AWS session")
 	}
 
 	ec2client := ec2.New(sess)
@@ -43,15 +36,15 @@ func GetElasticIps(region string) ([]ElasticIp, error) {
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
 			default:
-				return nil, errors.New(aerr.Error())
+				return errors.New(aerr.Error())
 			}
 		} else {
-			return nil, errors.New("Error on ec2 client")
+			return errors.New("Error on ec2 client")
 		}
 	}
 
 	for _, addr := range resp.Addresses {
-		result = append(result, ElasticIp{*addr.AllocationId, *addr.PublicIp})
+		ResourceList = append(ResourceList, Resource{"ElasticIp", *addr.AllocationId, *addr.PublicIp})
 	}
-	return (result), nil
+	return nil
 }
