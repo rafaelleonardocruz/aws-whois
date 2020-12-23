@@ -8,6 +8,13 @@
 
 This project intends to find inside AWS accounts which resource is using a specific IP address
 
+## Supported resoucers
+- [x] Ec2 Instances
+- [x] Ec2 Elastic IP
+- [ ] Ec2 ALB/NLB/CLB
+- [ ] API Gateway
+- [ ] RDS Instance
+
 ## Usage
 ```sh
 aws-whois - found which resource has a certain IP address
