@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const validAddressPublic string = "18.211.191.170"
-const validAddressPrivate string = "10.1.0.0"
-const validAddressGoogle string = "8.8.8.8"
-const invalidAddress string = "8.8.8"
-const validIpv6Address string = "fe80::38e7:b57:59e:1773"
-const validHostAws string = "ec2-54-207-114-71.sa-east-1.compute.amazonaws.com"
-const invalidHostAws string = "google.com"
+var validAddressPublic string = "18.211.191.170"
+var validAddressPrivate string = "10.1.0.0"
+var validAddressGoogle string = "8.8.8.8"
+var invalidAddress string = "8.8.8"
+var validIpv6Address string = "fe80::38e7:b57:59e:1773"
+var validHostAws string = "ec2-54-207-114-71.sa-east-1.compute.amazonaws.com"
+var invalidHostAws string = "google.com"
 
 func TestIsValidAddress(t *testing.T) {
 

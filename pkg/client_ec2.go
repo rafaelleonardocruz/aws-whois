@@ -8,22 +8,15 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-type Instance struct {
-	InstanceID string
-	IPAddress  string
-}
-
 //GetInstances function get ec2-instances to a specifc AWS Region
-func GetInstances(region string) ([]Instance, error) {
-
-	var result []Instance
+func GetInstances(region string) error {
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(region)},
 	)
 
 	if err != nil {
-		return nil, errors.New("Error initializing an AWS session")
+		return errors.New("Error initializing an AWS session")
 	}
 
 	ec2client := ec2.New(sess)
@@ -31,16 +24,16 @@ func GetInstances(region string) ([]Instance, error) {
 	resp, err := ec2client.DescribeInstances(nil)
 
 	if err != nil {
-		return nil, errors.New("Error on ec2 client")
+		return errors.New("Error on ec2 client")
 	}
 
-	for i, _ := range resp.Reservations {
+	for i := range resp.Reservations {
 		for _, instance := range resp.Reservations[i].Instances {
 			if *instance.PublicDnsName != "" {
-				result = append(result, Instance{*instance.InstanceId, *instance.PublicIpAddress})
+				ResourceList = append(ResourceList, Resource{"EC2", *instance.InstanceId, *instance.PublicIpAddress})
 			}
 		}
 	}
 
-	return (result), nil
+	return nil
 }
